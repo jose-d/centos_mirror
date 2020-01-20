@@ -1,4 +1,4 @@
-ATM, this is mirror of centos7 as it is using rsync from remote CTU repository.
+ATM, this script will mirror centos7 into `/repo/centos` using `rsync` from CTU repository.
 
-TODO:
+### TODO:
 createrepo for centos8
