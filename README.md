@@ -3,7 +3,7 @@ ATM, this script will mirror centos7 into `/repo/centos` using `rsync` from CTU 
 ### Example of usage
 
 ```
-[root@fe1 centos]# crontab -l
+# crontab -l
  59    1     *   *    *        /repo/centos/sync.sh
 #*     *     *   *    *        command to be executed
 #-     -     -   -    -
@@ -13,7 +13,7 @@ ATM, this script will mirror centos7 into `/repo/centos` using `rsync` from CTU 
 #|     |     +--------- day of        month (1 - 31)
 #|     +----------- hour (0 - 23)
 #+------------- min (0 - 59)
-[root@fe1 centos]#
+#
 ```
 
 ### Disk space required ATM:
