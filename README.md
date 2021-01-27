@@ -46,16 +46,12 @@ ATM, this script will mirror centos7 into `/repo/centos` using `rsync` from CTU 
 
 ## Disk space required ATM:
 
+### centos7
+
 ```
-# pwd
-/repo/centos
-# du -sh ./7
-74G     ./7
-# du -sh ./8
-70G     ./8
-# date
-Mon Jan 20 12:34:41 CET 2020
-#
+[root@fe1 centos]# du -sh ./7
+84G     ./7
+[root@fe1 centos]#
 ```
 
 ## TODO:
