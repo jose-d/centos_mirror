@@ -1,11 +1,8 @@
 #!/bin/bash
 
 #source_centos7="rsync://ftp.sh.cvut.cz/centos/7" #bad and old?
-source_centos7="rsync://mirror.it4i.cz/centos/7.8.2003"
+source_centos7="rsync://mirror.it4i.cz/centos/7"
 dest_centos7="/repo/centos/"
-
-source_centos8="rsync://mirror.it4i.cz/centos/8.2.2004/"
-dest_centos8="/repo/centos/"
 
 formatted_date() {
  /usr/bin/date "+%F, %T"
@@ -20,13 +17,10 @@ echo "******************************************"
 echo -n "* script started at "
 formatted_date
 
-#
 # * sync(s) with remote rsync servers
-#
 
 #rsync_opts="-rltzv"	# if you're curious, uncomment this..
-rsync_opts="-rtz"
-
+rsync_opts="-rtzL"
 
 echo -n "* centos/7 rsync started at "
 formatted_date
@@ -36,17 +30,6 @@ mkdir -p ${dest_centos7}
 cmd="/usr/bin/rsync -4 ${rsync_opts} --delete --exclude='.repodata' --exclude '*~tmp~*' --exclude 'atomic' --exclude 'repodata' ${source_centos7} ${dest_centos7}"
 echo ${cmd}
 eval ${cmd}
-
-#echo -n "* centos/8 rsync started at "
-#formatted_date
-
-# do The Sync - centos8
-#mkdir -p ${dest_centos8}
-#/usr/bin/rsync -4 ${rsync_opts} --delete --exclude 'aarch64' --exclude='ppc64le' --exclude='.repodata' --exclude '*~tmp~*' --exclude 'repodata' ${source_centos8} ${dest_centos8}
-
-# create/update the repo data 
-
-# * for centos 7
 
 echo "* updating repofiles for repo os "
 cleanedpath=$(readlink -m ${dest_centos7}/7/os/x86_64/)
@@ -63,7 +46,7 @@ for repo in ${repos}; do
 done
 
 # fix permissions aka give read to nginx..
-fix_perm '/repo/centos/'
+fix_perm '/repo/centos/7'
 
 echo -n "* script finished at "
 formatted_date
