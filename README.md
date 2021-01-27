@@ -1,4 +1,4 @@
-ATM, this script will mirror centos7 into `/repo/centos` using `rsync` from CTU repository.
+ATM, this script will mirror centos7 into `/repo/centos` using `rsync` from it4i repository.
 
 ## Example usage
 
