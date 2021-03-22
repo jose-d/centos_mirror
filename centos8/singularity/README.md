@@ -1,6 +1,6 @@
 ## build
 
-TBD
+`sudo singularity build c8stream.sif container.def`
 
 ## run
 
