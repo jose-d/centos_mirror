@@ -17,7 +17,16 @@ for repo in ${repos}; do
 done
 
 repo="pgdg12"
-singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --arch=x86_64 --arch=noarch --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
+
+repo="pgdg-common"
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
+
+repo="beegfs"
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
+
+repo="oneAPI"
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
 
 # 2) rsync images for installation
 

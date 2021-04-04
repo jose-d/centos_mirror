@@ -11,14 +11,41 @@ From: centos:latest
   dnf --assumeyes update
 
   # this is to avoid message "setlocale: LC_ALL: cannot change locale (en_US.utf-8)" after clean install of CentOS8
-  dnf install --assumeyes langpacks-en glibc-all-langpacks
+  dnf install --assumeyes langpacks-en glibc-all-langpacks wget
   dnf -y install http://repos.openhpc.community/OpenHPC/2/CentOS_8/x86_64/ohpc-release-2-1.el8.x86_64.rpm
+
+  # puppet
   dnf -y install "https://yum.puppetlabs.com/puppet-release-el-8.noarch.rpm"
+  rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puppet-release
+
+  # postgres
   dnf -y install "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
-  rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puppet-release
+  # beegfs
+  rpm --import https://www.beegfs.io/release/beegfs_7.2.1/gpg/RPM-GPG-KEY-beegfs
+  wget https://www.beegfs.io/release/beegfs_7.2.1/dists/beegfs-rhel8.repo -O /etc/yum.repos.d/beegfs.repo
+
+  # intel oneAPI
+  # - based on:
+  #   https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/installation/install-using-package-managers/yum-dnf-zypper.html
+
+  tee > /tmp/oneAPI.repo << EOF
+[oneAPI]
+name=Intel(R) oneAPI repository
+baseurl=https://yum.repos.intel.com/oneapi
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+EOF
+  mv /tmp/oneAPI.repo /etc/yum.repos.d
+
   dnf -y install yum-utils createrepo_c modulemd-tools python3-gobject
-  #dnf -y install strace
+
+  # print the repolist just for reference:
+  echo "========================================="
+  echo "dnf repolist:"
+  dnf repolist
 
 %environment
 
