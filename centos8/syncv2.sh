@@ -25,8 +25,18 @@ singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singulari
 repo="beegfs"
 singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
 
-repo="oneAPI"
-singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
+#oneAPI - only selective packages
+inteldir="/repo/centos8/oneAPI"
+mkdir -p ${inteldir}
+intelpkgs="intel-oneapi-vtune intel-oneapi-advisor"
+
+for pkg in ${intelpkgs}; do
+  echo "pkg: $pkg"
+  singularity exec -S /var/log -S /var/lib/dnf -S /var/cache/dnf --bind=/repo/centos8/oneAPI ${singularity_image_path} dnf install --assumeyes --disablerepo="*" --enablerepo="oneAPI" --downloadonly --downloaddir=${inteldir} ${pkg}
+done
+singularity exec -S /var/log -S /var/lib/dnf -S /var/cache/dnf --bind=/repo/centos8/oneAPI ${singularity_image_path} createrepo /repo/centos8/oneAPI
+
+
 
 # 2) rsync images for installation
 
