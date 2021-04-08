@@ -16,6 +16,12 @@ for repo in ${repos}; do
 
 done
 
+repo="OpenHPC"
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete -x 'trilinos-*' --repoid=${repo} --download-path /repo/centos8/ohpc8 --download-metadata && echo "sync of $repo done"
+
+repo="OpenHPC-updates"
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --repoid=${repo} --download-path /repo/centos8/ohpc8 --download-metadata && echo "sync of $repo done"
+
 repo="pgdg12"
 singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && echo "sync of $repo done"
 

@@ -35,10 +35,12 @@ name=Intel(R) oneAPI repository
 baseurl=https://yum.repos.intel.com/oneapi
 enabled=1
 gpgcheck=1
-repo_gpgcheck=1
 gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
 EOF
+
   mv /tmp/oneAPI.repo /etc/yum.repos.d
+  rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+  rpmkeys --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
 
   dnf -y install yum-utils createrepo_c modulemd-tools python3-gobject
 
