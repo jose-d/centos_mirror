@@ -44,7 +44,7 @@ syncohpc=false
 if [ "$syncohpc" = true ]; then
 
   quiet_flag="--quiet"
-  quiet_flag=""
+  #quiet_flag=""
 
   repo="OpenHPC"
   t0=`date +%s`
@@ -63,7 +63,7 @@ if [ "$syncohpc" = true ]; then
   echo -e "sync of repo ${repo} took ${t} s - ${result}"
 
 else
-  echo -e "sync of repo ${repo} skipped as requested."
+  echo -e "sync of OpenHPC + OpenHPC-updates skipped as requested."
 fi
 
 # 3) reposync epel and epel-modular
@@ -83,6 +83,27 @@ repo="epel-modular"
 t0=`date +%s`
 result=${KO_string}
 singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete ${quiet_flag} --repoid=${repo} --download-path /repo/centos8/epel8 --download-metadata --downloadcomps && result=${OK_string}
+t1=`date +%s`
+t=$((t1-t0))
+echo -e "sync of repo ${repo} took ${t} s - ${result}"
+
+# 4) reposync ondemand-web and ondemand-compute
+
+quiet_flag="--quiet"
+quiet_flag=""
+
+repo="ondemand-compute"
+t0=`date +%s`
+result=${KO_string}
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete ${quiet_flag} --repoid=${repo} --download-path /repo/centos8/ondemand --download-metadata --downloadcomps && result=${OK_string}
+t1=`date +%s`
+t=$((t1-t0))
+echo -e "sync of repo ${repo} took ${t} s - ${result}"
+
+repo="ondemand-web"
+t0=`date +%s`
+result=${KO_string}
+singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete ${quiet_flag} --repoid=${repo} --download-path /repo/centos8/ondemand --download-metadata --downloadcomps && result=${OK_string}
 t1=`date +%s`
 t=$((t1-t0))
 echo -e "sync of repo ${repo} took ${t} s - ${result}"

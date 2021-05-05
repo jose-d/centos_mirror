@@ -25,6 +25,15 @@ From: centos:latest
   rpm --import https://www.beegfs.io/release/beegfs_7.2.1/gpg/RPM-GPG-KEY-beegfs
   wget https://www.beegfs.io/release/beegfs_7.2.1/dists/beegfs-rhel8.repo -O /etc/yum.repos.d/beegfs.repo
 
+  # ondemand
+  dnf -y install https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
+  rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+  rpmkeys --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+
+  dnf -y install https://yum.osc.edu/ondemand/1.8/ondemand-release-compute-1.8-1.noarch.rpm
+  rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+  rpmkeys --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+
   # intel oneAPI
   # - based on:
   #   https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/installation/install-using-package-managers/yum-dnf-zypper.html
