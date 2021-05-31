@@ -23,20 +23,20 @@ function ctrl_c() {
 
 mkdir -p ${target_path}
 
-# 1) reposync latest packages of centos repos
-
+# -) reposync latest packages of centos repos
+quiet_flag="--quiet"
 repos="appstream baseos extras powertools"
 for repo in ${repos}; do
   t0=`date +%s`
   result=${KO_string}
-  singularity exec -S /var/log -S /var/cache/dnf --bind=${target_path} ${singularity_image_path} dnf reposync --delete --quiet --arch=x86_64 --arch=noarch --repoid=${repo} --download-path ${target_path} --download-metadata --downloadcomps && result=${OK_string}
+  singularity exec -S /var/log -S /var/cache/dnf --bind=${target_path} ${singularity_image_path} dnf reposync --delete ${quiet_flag} --arch=x86_64 --arch=noarch --repoid=${repo} --download-path ${target_path} --download-metadata --downloadcomps && result=${OK_string}
   t1=`date +%s`
   t=$((t1-t0))
   echo -e "sync of repo ${repo} took ${t} s - ${result}"
 
 done
 
-# 2) reposync openHPC and openHPC-updates
+# -) reposync openHPC and openHPC-updates
 
 syncohpc=false
 #syncohpc=true
@@ -66,10 +66,10 @@ else
   echo -e "sync of OpenHPC + OpenHPC-updates skipped as requested."
 fi
 
-# 3) reposync epel and epel-modular
+# -) reposync epel and epel-modular
 
 quiet_flag="--quiet"
-quiet_flag=""
+#quiet_flag=""
 
 repo="epel"
 t0=`date +%s`
@@ -87,65 +87,101 @@ t1=`date +%s`
 t=$((t1-t0))
 echo -e "sync of repo ${repo} took ${t} s - ${result}"
 
-# 4) reposync ondemand-web and ondemand-compute
+# -) reposync ondemand-web and ondemand-compute
 
-quiet_flag="--quiet"
-quiet_flag=""
+syncondemand=false
+#syncondemand=true
 
-repo="ondemand-compute"
-t0=`date +%s`
-result=${KO_string}
-singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete ${quiet_flag} --repoid=${repo} --download-path /repo/centos8/ondemand --download-metadata --downloadcomps && result=${OK_string}
-t1=`date +%s`
-t=$((t1-t0))
-echo -e "sync of repo ${repo} took ${t} s - ${result}"
+if [ "$syncondemand" = true ]; then
 
-repo="ondemand-web"
-t0=`date +%s`
-result=${KO_string}
-singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete ${quiet_flag} --repoid=${repo} --download-path /repo/centos8/ondemand --download-metadata --downloadcomps && result=${OK_string}
-t1=`date +%s`
-t=$((t1-t0))
-echo -e "sync of repo ${repo} took ${t} s - ${result}"
+  quiet_flag="--quiet"
+  quiet_flag=""
 
-
-
-repo="pgdg12"
-t0=`date +%s`
-result=${KO_string}
-singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && result=${OK_string}
-t1=`date +%s`
-t=$((t1-t0))
-echo -e "sync of repo ${repo} took ${t} s - ${result}"
-
-repo="pgdg-common"
-t0=`date +%s`
-result=${KO_string}
-singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && result=${OK_string}
-t1=`date +%s`
-t=$((t1-t0))
-echo -e "sync of repo ${repo} took ${t} s - ${result}"
-
-repo="beegfs"
-t0=`date +%s`
-result=${KO_string}
-singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && result=${OK_string}
-t1=`date +%s`
-t=$((t1-t0))
-echo -e "sync of repo ${repo} took ${t} s - ${result}"
-
-#oneAPI - only selective packages
-inteldir="/repo/centos8/oneAPI"
-mkdir -p ${inteldir}
-intelpkgs="intel-oneapi-vtune intel-oneapi-advisor"
-
-for pkg in ${intelpkgs}; do
+  repo="ondemand-compute"
+  t0=`date +%s`
   result=${KO_string}
-  singularity exec -S /var/log -S /var/lib/dnf -S /var/cache/dnf --bind=/repo/centos8/oneAPI ${singularity_image_path} dnf install --quiet --assumeyes --disablerepo="*" --enablerepo="oneAPI" --downloadonly --downloaddir=${inteldir} ${pkg} && result=${OK_string}
-  echo -e "pkg: $pkg - ${result}"
-done
-singularity exec -S /var/log -S /var/lib/dnf -S /var/cache/dnf --bind=/repo/centos8/oneAPI ${singularity_image_path} createrepo --quiet ${inteldir}
+  singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete ${quiet_flag} --repoid=${repo} --download-path /repo/centos8/ondemand --download-metadata --downloadcomps && result=${OK_string}
+  t1=`date +%s`
+  t=$((t1-t0))
+  echo -e "sync of repo ${repo} took ${t} s - ${result}"
 
+  repo="ondemand-web"
+  t0=`date +%s`
+  result=${KO_string}
+  singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete ${quiet_flag} --repoid=${repo} --download-path /repo/centos8/ondemand --download-metadata --downloadcomps && result=${OK_string}
+  t1=`date +%s`
+  t=$((t1-t0))
+  echo -e "sync of repo ${repo} took ${t} s - ${result}"
+else
+  echo -e "sync of ondemand-compute + ondemand-web skipped as requested."
+fi
+
+
+# -) sync postgres
+
+syncpg=false
+#syncpg=true
+
+if [ "$syncpg" = true ]; then
+
+  repo="pgdg12"
+  t0=`date +%s`
+  result=${KO_string}
+  singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && result=${OK_string}
+  t1=`date +%s`
+  t=$((t1-t0))
+  echo -e "sync of repo ${repo} took ${t} s - ${result}"
+
+  repo="pgdg-common"
+  t0=`date +%s`
+  result=${KO_string}
+  singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && result=${OK_string}
+  t1=`date +%s`
+  t=$((t1-t0))
+  echo -e "sync of repo ${repo} took ${t} s - ${result}"
+else
+  echo -e "sync of pgdg12 + pgdg-common skipped as requested."
+fi
+
+# -) sync beeGFS
+
+syncbeegfs=false
+#syncbeegfs=true
+
+if [ "$syncbeegfs" = true ]; then
+
+  repo="beegfs"
+  t0=`date +%s`
+  result=${KO_string}
+  singularity exec -S /var/log -S /var/cache/dnf --bind=/repo/centos8  ${singularity_image_path} dnf reposync --newest-only --delete --quiet --repoid=${repo} --download-path /repo/centos8 --download-metadata --downloadcomps && result=${OK_string}
+  t1=`date +%s`
+  t=$((t1-t0))
+  echo -e "sync of repo ${repo} took ${t} s - ${result}"
+else
+  echo -e "sync of beegfs skipped as requested."
+fi
+
+# -) sync intel
+
+syncintel=false
+#syncintel=true
+
+if [ "$syncintel" = true ]; then
+
+  #oneAPI - only selective packages
+  inteldir="/repo/centos8/oneAPI"
+  mkdir -p ${inteldir}
+  intelpkgs="intel-oneapi-vtune intel-oneapi-advisor"
+
+  for pkg in ${intelpkgs}; do
+    result=${KO_string}
+    singularity exec -S /var/log -S /var/lib/dnf -S /var/cache/dnf --bind=/repo/centos8/oneAPI ${singularity_image_path} dnf install --quiet --assumeyes --disablerepo="*" --enablerepo="oneAPI" --downloadonly --downloaddir=${inteldir} ${pkg} && result=${OK_string}
+    echo -e "pkg: $pkg - ${result}"
+  done
+  singularity exec -S /var/log -S /var/lib/dnf -S /var/cache/dnf --bind=/repo/centos8/oneAPI ${singularity_image_path} createrepo --quiet ${inteldir}
+else
+  echo -e "sync of syncintel skipped as requested."
+fi
 
 
 # 2) rsync images for node deployment program
