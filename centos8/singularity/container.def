@@ -22,8 +22,8 @@ From: centos:latest
   dnf -y install "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
   # beegfs
-  rpm --import https://www.beegfs.io/release/beegfs_7.2.1/gpg/RPM-GPG-KEY-beegfs
-  wget https://www.beegfs.io/release/beegfs_7.2.1/dists/beegfs-rhel8.repo -O /etc/yum.repos.d/beegfs.repo
+  rpm --import https://www.beegfs.io/release/beegfs_7.2.2/gpg/RPM-GPG-KEY-beegfs
+  wget https://www.beegfs.io/release/beegfs_7.2.2/dists/beegfs-rhel8.repo -O /etc/yum.repos.d/beegfs.repo
 
   # ondemand
   dnf -y install https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm
